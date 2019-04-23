@@ -1,12 +1,19 @@
 {
-  "name": "apigateway-export",
+  "name": "apigateway-export-tool",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "apigateway-export-tool": "cli.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Nir Adler <niradler55@email.com> (https://niradler.com)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.441.0",
+    "commander": "^2.20.0"
+  }
 }
