@@ -1,6 +1,6 @@
 {
   "name": "apigateway-export-tool",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "Export apigateway docs.",
   "main": "index.js",
   "bin": {
@@ -20,5 +20,14 @@
     "aws-sdk": "^2.441.0",
     "commander": "^2.20.0",
     "joi": "^14.3.1"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/niradler/apigateway-export-tool.git"
+  },
+  "bugs": {
+    "url": "https://github.com/niradler/apigateway-export-tool/issues"
+  },
+  "homepage": "https://github.com/niradler/apigateway-export-tool#readme"
 }
