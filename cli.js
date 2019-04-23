@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const program = require("commander");
 const { getExportAndSave } = require(".");
+const package = require("./package.json");
 const importApiGatewayDocFile = ({
   path,
   exportType,
@@ -20,7 +21,7 @@ const importApiGatewayDocFile = ({
 };
 
 program
-  .version("0.0.2")
+  .version(package.version)
   .option("-p, --path [path]", "path", process.cwd())
   .option("-t, --exportType [type]", "exportType", "swagger")
   .option("-i, --restApiId <id>", "restApiId")
@@ -40,3 +41,7 @@ program
   });
 
 program.parse(process.argv);
+
+if (!process.argv.slice(2).length) {
+  program.help();
+}

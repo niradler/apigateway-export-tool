@@ -1,13 +1,34 @@
-//https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/APIGateway.html#getExport-property
 const fs = require("fs");
 const AWS = require("aws-sdk");
 const path = require("path");
-const apigateway = new AWS.APIGateway({
+const Joi = require("joi");
+
+const awsConfig = {
   apiVersion: "2015-07-09",
   region: "us-east-1"
+};
+
+const setAwsConfig = (opt = {}) => {
+  for (const key in opt) {
+    awsConfig[key] = opt[key];
+  }
+};
+
+const schema = Joi.object().keys({
+  exportType: Joi.string()
+    .default("swagger")
+    .allow(["oas30", "swagger"]),
+  restApiId: Joi.string().required(),
+  stageName: Joi.string().required(),
+  parameters: Joi.object().keys({
+    extensions: Joi.string()
+      .default("postman")
+      .allow(["postman", "integrations", "integrations", "authorizers"])
+  })
 });
 
 const getExport = params => {
+  const apigateway = new AWS.APIGateway(awsConfig);
   return new Promise((resolve, reject) => {
     apigateway.getExport(params, (err, data) => {
       if (err) {
@@ -19,16 +40,10 @@ const getExport = params => {
   });
 };
 
-const options = {
-  exportType: ["oas30", "swagger"],
-  restApiId: true,
-  stageName: true,
-  parameters: {
-    extensions: ["postman", "integrations", "integrations", "authorizers"]
-  }
-};
-
 const getExportAndSave = async (params, filePath) => {
+  const { error, value } = Joi.validate(params, schema);
+  if (error) throw new Error(error.message);
+  params = value;
   const res = await getExport(params);
   const file = JSON.parse(res.body);
   if (filePath) {
@@ -42,5 +57,6 @@ const getExportAndSave = async (params, filePath) => {
 };
 
 module.exports = {
-  getExportAndSave
+  getExportAndSave,
+  setAwsConfig
 };
