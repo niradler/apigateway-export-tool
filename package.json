@@ -1,7 +1,7 @@
 {
   "name": "apigateway-export-tool",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.0.2",
+  "description": "Export apigateway docs.",
   "main": "index.js",
   "bin": {
     "apigateway-export-tool": "cli.js"
@@ -9,7 +9,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "apigateway",
+    "docs"
+  ],
   "author": "Nir Adler <niradler55@email.com> (https://niradler.com)",
   "license": "MIT",
   "dependencies": {
