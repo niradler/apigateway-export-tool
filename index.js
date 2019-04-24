@@ -29,6 +29,7 @@ const schema = Joi.object().keys({
 
 const getExport = params => {
   const apigateway = new AWS.APIGateway(awsConfig);
+
   return new Promise((resolve, reject) => {
     apigateway.getExport(params, (err, data) => {
       if (err) {
@@ -62,8 +63,48 @@ const getRestApis = (
   }
 ) => {
   const apigateway = new AWS.APIGateway(awsConfig);
+
   return new Promise((resolve, reject) => {
     apigateway.getRestApis(params, (err, data) => {
+      if (err) reject(err, err.stack);
+      else resolve(data);
+    });
+  });
+};
+
+const getStages = params => {
+  const apigateway = new AWS.APIGateway(awsConfig);
+
+  return new Promise((resolve, reject) => {
+    apigateway.getStages(params, function(err, data) {
+      if (err) reject(err, err.stack);
+      else resolve(data);
+    });
+  });
+};
+
+const importDocumentation = params => {
+  const apigateway = new AWS.APIGateway(awsConfig);
+  params = {
+    body:
+      new Buffer("...") ||
+      "STRING_VALUE" /* required */ /* Strings will be Base-64 encoded on your behalf */,
+    restApiId: "STRING_VALUE" /* required */
+  };
+
+  return new Promise((resolve, reject) => {
+    apigateway.importDocumentationParts(params, (err, data) => {
+      if (err) reject(err, err.stack);
+      else resolve(data);
+    });
+  });
+};
+
+const getSdk = params => {
+  const apigateway = new AWS.APIGateway(awsConfig);
+
+  return new Promise((resolve, reject) => {
+    apigateway.getSdk(params, (err, data) => {
       if (err) reject(err, err.stack);
       else resolve(data);
     });
@@ -73,5 +114,8 @@ const getRestApis = (
 module.exports = {
   getExportAndSave,
   setAwsConfig,
-  getRestApis
+  getRestApis,
+  getStages,
+  importDocumentation,
+  getSdk
 };

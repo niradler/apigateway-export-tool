@@ -1,7 +1,15 @@
-const { getExportAndSave, setAwsConfig, getRestApis } = require(".");
+const fs = require("fs");
+const {
+  getExportAndSave,
+  setAwsConfig,
+  getRestApis,
+  getSdk,
+  getStages,
+  importDocumentation
+} = require(".");
 
 const params = {
-  restApiId: "testid",
+  restApiId: "9172pqnobj",
   stageName: "prod"
 };
 
@@ -55,7 +63,47 @@ const params = {
   try {
     setAwsConfig({ region: "us-east-1" });
     const apis = await getRestApis();
-    console.log("items", apis);
+    console.log("apis", apis);
+  } catch (error) {
+    console.error(error);
+  }
+})();
+
+(async function() {
+  try {
+    setAwsConfig({ region: "us-east-1" });
+    const stages = await getStages({ restApiId: params.restApiId });
+    console.log("stages", stages);
+  } catch (error) {
+    console.error(error);
+  }
+})();
+
+(async function() {
+  try {
+    setAwsConfig({ region: "us-east-1" });
+    const param = {
+      restApiId: params.restApiId,
+      sdkType: "javascript",
+      stageName: "prod"
+    };
+    const sdk = await getSdk(param);
+    fs.writeFileSync("./test/javascript.zip", sdk.body);
+    console.log("sdk", sdk);
+  } catch (error) {
+    console.error(error);
+  }
+})();
+
+(async function() {
+  try {
+    setAwsConfig({ region: "us-east-1" });
+    const body = await getExportAndSave(params);
+    const doc = await importDocumentation({
+      restApiId: params.restApiId,
+      body
+    });
+    console.log("doc", doc);
   } catch (error) {
     console.error(error);
   }
