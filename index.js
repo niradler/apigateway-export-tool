@@ -56,7 +56,22 @@ const getExportAndSave = async (params, filePath) => {
   return file;
 };
 
+const getRestApis = (
+  params = {
+    limit: 500
+  }
+) => {
+  const apigateway = new AWS.APIGateway(awsConfig);
+  return new Promise((resolve, reject) => {
+    apigateway.getRestApis(params, (err, data) => {
+      if (err) reject(err, err.stack);
+      else resolve(data);
+    });
+  });
+};
+
 module.exports = {
   getExportAndSave,
-  setAwsConfig
+  setAwsConfig,
+  getRestApis
 };

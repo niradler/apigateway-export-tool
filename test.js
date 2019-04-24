@@ -1,4 +1,4 @@
-const { getExportAndSave, setAwsConfig } = require(".");
+const { getExportAndSave, setAwsConfig, getRestApis } = require(".");
 
 const params = {
   restApiId: "testid",
@@ -48,5 +48,15 @@ const params = {
     } else {
       console.error(error);
     }
+  }
+})();
+
+(async function() {
+  try {
+    setAwsConfig({ region: "us-east-1" });
+    const apis = await getRestApis();
+    console.log("items", apis);
+  } catch (error) {
+    console.error(error);
   }
 })();

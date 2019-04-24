@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const program = require("commander");
-const { getExportAndSave } = require(".");
+const { getExportAndSave, getRestApis } = require(".");
 const package = require("./package.json");
 const importApiGatewayDocFile = ({
   path,
@@ -40,6 +40,20 @@ program
       .catch(e => console.error(e));
   });
 
+program
+  .command("list")
+  .option("-l, --limit [number]", "limit", 500)
+  .action(args => {
+    const { limit } = args;
+    getRestApis({
+      limit
+    })
+      .then(apis => {
+        console.log(apis.items.map(i => ({ id: i.id, name: i.name })));
+        process.exit();
+      })
+      .catch(e => console.error(e));
+  });
 program.parse(process.argv);
 
 if (!process.argv.slice(2).length) {

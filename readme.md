@@ -13,16 +13,20 @@ Options:
   -e, --extensions [ext]   extensions (default: "postman")
   -s, --stageName [stage]  stageName (default: "prod")
   -h, --help               output usage information
+
+Commands:
+  list [options]
 ```
 
 ```
+npx apigateway-export-tool list
 npx apigateway-export-tool -i 123123 -stageName prod
 ```
 
 ## Usage Nodejs
 
 ```
-const { getExportAndSave,setAwsConfig } = require("apigateway-export-tool");
+const { getExportAndSave, getRestApis, setAwsConfig } = require("apigateway-export-tool");
 setAwsConfig({ region: "us-east-1" });
 
 (async function() {
@@ -35,6 +39,7 @@ setAwsConfig({ region: "us-east-1" });
     }
   };
   const filePath = "./";
+  const apis = await getRestApis(); 
   const file = await getExportAndSave(params, filePath); //save the file in path.
   const file = await getExportAndSave(params); // just returning the file.
 })();
