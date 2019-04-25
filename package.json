@@ -4,7 +4,7 @@
   "description": "Export apigateway docs.",
   "main": "index.js",
   "bin": {
-    "apigateway-export-tool": "cli.js"
+    "apigateway-export-tool": "apigateway-export-tool.js"
   },
   "scripts": {
     "test": "node test.js"
