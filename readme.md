@@ -55,3 +55,11 @@ setAwsConfig({ region: "us-east-1" });
 })();
 
 ```
+
+### AWS credentials
+
+if you have aws cli configure on your machine you dont need to worry about that,
+if not you can setup the credentials using one of this two options:
+
+- Loaded from the shared credentials file (~/.aws/credentials)
+- Loaded from environment variables (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
