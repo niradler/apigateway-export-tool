@@ -49,7 +49,7 @@ const getExportAndSave = async (params, filePath) => {
   const file = JSON.parse(res.body);
   if (filePath) {
     fs.writeFileSync(
-      path.join(process.cwd(), `${file.info.title}.json`),
+      path.join(process.cwd(), filePath, `${file.info.title}.json`),
       res.body
     );
   }

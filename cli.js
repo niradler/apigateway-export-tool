@@ -10,13 +10,15 @@ const package = require("./package.json");
 
 program
   .version(package.version)
-  .description("Download swagger file for a given restApiId.")
-  .option("-p, --path [path]", "path", process.cwd())
+  .command("docs")
+  .description("Download docs file for a given restApiId.")
+  .option("-p, --path [path]", "path", "./")
   .option("-t, --exportType [type]", "exportType", "swagger")
   .option("-i, --restApiId <id>", "restApiId")
   .option("-e, --extensions [ext]", "extensions", "postman")
   .option("-s, --stageName [stage]", "stageName", "prod")
   .action(args => {
+    console.log("Download");
     const { path, exportType, restApiId, extensions, stageName } = args;
     const params = {
       exportType,
@@ -33,10 +35,10 @@ program
 
 program
   .command("list")
-  .description("list all restApis.")
+  .description("List all restApis.")
   .option("-l, --limit [number]", "limit", 500)
   .action(args => {
-    const { limit } = args.parent;
+    const { limit } = args;
 
     getRestApis({
       limit
@@ -53,7 +55,7 @@ program
   .description("Get stages for a given restApiId.")
   .option("-i, --restApiId <id>", "restApiId")
   .action(args => {
-    const { restApiId } = args.parent;
+    const { restApiId } = args;
 
     getStages({
       restApiId
@@ -72,14 +74,13 @@ program
 
 program
   .command("sdk")
-  .description("Download sdk for a given restApiId and stage.")
+  .description("Download sdk for a given restApiId.")
   .option("-i, --restApiId <id>", "restApiId")
   .option("-t, --sdkType [type]", "sdkType", "javascript")
-  .option("-s, --stageName <stage>", "stageName")
-  .option("-p, --path [path]", "path", process.cwd())
+  .option("-s, --stageName [stage]", "stageName", "prod")
+  .option("-p, --path [path]", "path", "./")
   .action(args => {
-    const { restApiId, stageName } = args.parent;
-    const { sdkType, path } = args;
+    const { sdkType, path, stageName, restApiId } = args;
     getSdkAndSave({ restApiId, sdkType, stageName }, path)
       .then(sdk => {
         process.exit();
@@ -88,6 +89,14 @@ program
   });
 
 program.parse(process.argv);
+
+program.on("command:*", function() {
+  console.error(
+    "Invalid command: %s\nSee --help for a list of available commands.",
+    program.args.join(" ")
+  );
+  process.exit(1);
+});
 
 if (!process.argv.slice(2).length) {
   program.help();
