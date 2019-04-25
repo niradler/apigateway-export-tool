@@ -3,7 +3,7 @@
 ## Usage CLI
 
 ```
-Usage: apigateway-export-tool [options]
+Usage: apigateway-export-tool [command]
 
 Options:
   -V, --version     output the version number
@@ -18,6 +18,7 @@ Commands:
 
 ```
 npx apigateway-export-tool list
+npx apigateway-export-tool docs -h
 npx apigateway-export-tool docs -i 123123 -stageName prod
 ```
 
