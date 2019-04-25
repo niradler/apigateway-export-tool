@@ -1,9 +1,10 @@
-const fs = require("fs");
 const {
   getExportAndSave,
+  getExport,
   setAwsConfig,
   getRestApis,
   getSdk,
+  getSdkAndSave,
   getStages,
   importDocumentation
 } = require(".");
@@ -31,7 +32,7 @@ const params = {
 
 (async function() {
   try {
-    await getExportAndSave({});
+    await getExport({});
     throw new Error("wrong param failed!");
   } catch (error) {
     if (
@@ -88,8 +89,24 @@ const params = {
       stageName: "prod"
     };
     const sdk = await getSdk(param);
-    fs.writeFileSync("./test/javascript.zip", sdk.body);
+
     console.log("sdk", sdk);
+  } catch (error) {
+    console.error(error);
+  }
+})();
+
+(async function() {
+  try {
+    setAwsConfig({ region: "us-east-1" });
+    const param = {
+      restApiId: params.restApiId,
+      sdkType: "javascript",
+      stageName: "prod"
+    };
+    const sdk = await getSdkAndSave(param, "./test");
+
+    console.log("sdk saved", sdk);
   } catch (error) {
     console.error(error);
   }

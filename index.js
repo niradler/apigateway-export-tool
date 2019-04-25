@@ -76,7 +76,7 @@ const getStages = params => {
   const apigateway = new AWS.APIGateway(awsConfig);
 
   return new Promise((resolve, reject) => {
-    apigateway.getStages(params, function(err, data) {
+    apigateway.getStages(params, (err, data) => {
       if (err) reject(err, err.stack);
       else resolve(data);
     });
@@ -85,12 +85,6 @@ const getStages = params => {
 
 const importDocumentation = params => {
   const apigateway = new AWS.APIGateway(awsConfig);
-  params = {
-    body:
-      new Buffer("...") ||
-      "STRING_VALUE" /* required */ /* Strings will be Base-64 encoded on your behalf */,
-    restApiId: "STRING_VALUE" /* required */
-  };
 
   return new Promise((resolve, reject) => {
     apigateway.importDocumentationParts(params, (err, data) => {
@@ -111,11 +105,22 @@ const getSdk = params => {
   });
 };
 
+const getSdkAndSave = async (params, filePath) => {
+  const sdk = await getSdk(params);
+  if (filePath) {
+    fs.writeFileSync(path.join(filePath, `${params.sdkType}.zip`), sdk.body);
+  }
+
+  return sdk;
+};
+
 module.exports = {
-  getExportAndSave,
   setAwsConfig,
+  getExport,
+  getExportAndSave,
   getRestApis,
   getStages,
   importDocumentation,
-  getSdk
+  getSdk,
+  getSdkAndSave
 };
