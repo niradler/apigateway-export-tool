@@ -108,7 +108,10 @@ const getSdk = params => {
 const getSdkAndSave = async (params, filePath) => {
   const sdk = await getSdk(params);
   if (filePath) {
-    fs.writeFileSync(path.join(filePath, `${params.sdkType}.zip`), sdk.body);
+    fs.writeFileSync(
+      path.join(process.cwd(), filePath, `${params.sdkType}.zip`),
+      sdk.body
+    );
   }
 
   return sdk;
