@@ -1,6 +1,6 @@
 {
   "name": "apigateway-export-tool",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Export apigateway docs.",
   "main": "index.js",
   "bin": {

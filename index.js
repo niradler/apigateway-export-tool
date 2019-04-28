@@ -48,9 +48,11 @@ const getExportAndSave = async (params, filePath) => {
   const res = await getExport(params);
   const file = JSON.parse(res.body);
   if (filePath) {
+    const ext =
+      params.exportType && params.exportType === "oas30" ? "yml" : "json";
     const pathToSave = path.isAbsolute(filePath)
-      ? path.join(filePath, `${file.info.title}.json`)
-      : path.join(process.cwd(), filePath, `${file.info.title}.json`);
+      ? path.join(filePath, `${file.info.title}.${ext}`)
+      : path.join(process.cwd(), filePath, `${file.info.title}.${ext}`);
     fs.writeFileSync(pathToSave, res.body);
   }
 
@@ -112,6 +114,13 @@ const getSdkAndSave = async (params, filePath) => {
       path.join(process.cwd(), filePath, `${params.sdkType}.zip`),
       sdk.body
     );
+  }
+  if (filePath) {
+    const ext = "zip";
+    const pathToSave = path.isAbsolute(filePath)
+      ? path.join(filePath, `${params.sdkType}.${ext}`)
+      : path.join(process.cwd(), filePath, `${params.sdkType}.${ext}`);
+    fs.writeFileSync(pathToSave, res.body);
   }
 
   return sdk;
