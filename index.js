@@ -48,10 +48,10 @@ const getExportAndSave = async (params, filePath) => {
   const res = await getExport(params);
   const file = JSON.parse(res.body);
   if (filePath) {
-    fs.writeFileSync(
-      path.join(process.cwd(), filePath, `${file.info.title}.json`),
-      res.body
-    );
+    const pathToSave = path.isAbsolute(filePath)
+      ? path.join(filePath, `${file.info.title}.json`)
+      : path.join(process.cwd(), filePath, `${file.info.title}.json`);
+    fs.writeFileSync(pathToSave, res.body);
   }
 
   return file;
