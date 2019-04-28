@@ -41,12 +41,25 @@ const getExport = params => {
   });
 };
 
-const getExportAndSave = async (params, filePath) => {
+const getExportAndSave = async (params, filePath, opt) => {
   const { error, value } = Joi.validate(params, schema);
   if (error) throw new Error(error.message);
   params = value;
   const res = await getExport(params);
   const file = JSON.parse(res.body);
+  if (opt && opt.fixBasePath) {
+    for (const key in file.servers) {
+      const server = file.servers[key];
+      if (server.variables && server.variables.basePath.default) {
+        let temp = server.variables.basePath.default;
+        if (temp.charAt(0) === "/") {
+          temp = temp.substring(1);
+          server.variables.basePath.default = temp;
+          res.body = JSON.stringify(file, null, 2);
+        }
+      }
+    }
+  }
   if (filePath) {
     const ext =
       params.exportType && params.exportType === "oas30" ? "yml" : "json";
