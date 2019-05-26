@@ -5,7 +5,7 @@ const Joi = require("joi");
 
 const awsConfig = {
   apiVersion: "2015-07-09",
-  region: "us-east-1"
+  region: process.env.AWS_DEFAULT_REGION || "us-east-1"
 };
 
 const setAwsConfig = (opt = {}) => {

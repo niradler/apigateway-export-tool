@@ -10,7 +10,7 @@ const {
 } = require(".");
 
 const params = {
-  restApiId: "9172pqnobj",
+  restApiId: "0172pqnobj",
   stageName: "prod"
 };
 

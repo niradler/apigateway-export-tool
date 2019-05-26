@@ -4,7 +4,8 @@ const {
   getExportAndSave,
   getRestApis,
   getSdkAndSave,
-  getStages
+  getStages,
+  setAwsConfig
 } = require(".");
 const package = require("./package.json");
 
@@ -17,8 +18,9 @@ program
   .option("-i, --restApiId <id>", "restApiId")
   .option("-e, --extensions [ext]", "extensions", "postman")
   .option("-s, --stageName [stage]", "stageName", "prod")
+  .option("-r, --region [region]", "region", "us-east-1")
   .action(args => {
-    const { path, exportType, restApiId, extensions, stageName } = args;
+    const { path, exportType, restApiId, extensions, stageName, region } = args;
     const params = {
       exportType,
       restApiId,
@@ -27,6 +29,7 @@ program
         extensions
       }
     };
+    setAwsConfig({ region });
     getExportAndSave(params, path)
       .then(() => process.exit())
       .catch(e => console.error(e));
