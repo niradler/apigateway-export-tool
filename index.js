@@ -5,7 +5,18 @@ const Joi = require("joi");
 
 const awsConfig = {
   apiVersion: "2015-07-09",
-  region: process.env.AWS_DEFAULT_REGION || "us-east-1"
+  region:
+    process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION || "us-east-1",
+};
+
+const iniFileCredentials = (profile) => {
+  const credentials = new AWS.SharedIniFileCredentials({ profile });
+
+  return credentials;
+};
+
+const setCredentials = (credentials) => {
+  AWS.config.credentials = credentials;
 };
 
 const setAwsConfig = (opt = {}) => {
@@ -15,19 +26,17 @@ const setAwsConfig = (opt = {}) => {
 };
 
 const schema = Joi.object().keys({
-  exportType: Joi.string()
-    .default("swagger")
-    .allow(["oas30", "swagger"]),
+  exportType: Joi.string().default("swagger").allow(["oas30", "swagger"]),
   restApiId: Joi.string().required(),
   stageName: Joi.string().required(),
   parameters: Joi.object().keys({
     extensions: Joi.string()
       .default("postman")
-      .allow(["postman", "integrations", "integrations", "authorizers"])
-  })
+      .allow(["postman", "integrations", "integrations", "authorizers"]),
+  }),
 });
 
-const getExport = params => {
+const getExport = (params) => {
   const apigateway = new AWS.APIGateway(awsConfig);
 
   return new Promise((resolve, reject) => {
@@ -74,7 +83,7 @@ const getExportAndSave = async (params, filePath, opt) => {
 
 const getRestApis = (
   params = {
-    limit: 500
+    limit: 500,
   }
 ) => {
   const apigateway = new AWS.APIGateway(awsConfig);
@@ -87,7 +96,7 @@ const getRestApis = (
   });
 };
 
-const getStages = params => {
+const getStages = (params) => {
   const apigateway = new AWS.APIGateway(awsConfig);
 
   return new Promise((resolve, reject) => {
@@ -98,7 +107,7 @@ const getStages = params => {
   });
 };
 
-const importDocumentation = params => {
+const importDocumentation = (params) => {
   const apigateway = new AWS.APIGateway(awsConfig);
 
   return new Promise((resolve, reject) => {
@@ -109,7 +118,7 @@ const importDocumentation = params => {
   });
 };
 
-const getSdk = params => {
+const getSdk = (params) => {
   const apigateway = new AWS.APIGateway(awsConfig);
 
   return new Promise((resolve, reject) => {
@@ -147,5 +156,7 @@ module.exports = {
   getStages,
   importDocumentation,
   getSdk,
-  getSdkAndSave
+  getSdkAndSave,
+  setCredentials,
+  iniFileCredentials,
 };

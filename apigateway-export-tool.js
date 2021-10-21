@@ -5,9 +5,24 @@ const {
   getRestApis,
   getSdkAndSave,
   getStages,
-  setAwsConfig
+  setAwsConfig,
+  iniFileCredentials
 } = require(".");
 const package = require("./package.json");
+
+const setAwsConfigFromArgs = (args) =>{
+  const awsConfig = {
+    region: args.parent.region
+  }
+  if(args.parent.profile){
+    awsConfig.credentials = iniFileCredentials(args.parent.profile);
+  }
+  setAwsConfig(awsConfig);
+}
+
+program
+  .option("-r, --region [region]", "region", "us-east-1")
+  .option("--profile [profile]", "aws profile", "");
 
 program
   .version(package.version)
@@ -18,60 +33,59 @@ program
   .option("-i, --restApiId <id>", "restApiId")
   .option("-e, --extensions [ext]", "extensions", "postman")
   .option("-s, --stageName [stage]", "stageName", "prod")
-  .option("-r, --region [region]", "region", "us-east-1")
-  .action(args => {
-    const { path, exportType, restApiId, extensions, stageName, region } = args;
+  .action((args) => {
+    const { path, exportType, restApiId, extensions, stageName } = args;
     const params = {
       exportType,
       restApiId,
       stageName,
       parameters: {
-        extensions
-      }
+        extensions,
+      },
     };
-    setAwsConfig({ region });
+    setAwsConfigFromArgs(args)
     getExportAndSave(params, path)
       .then(() => process.exit())
-      .catch(e => console.error(e));
+      .catch((e) => console.error(e));
   });
 
 program
   .command("list")
   .description("List all restApis.")
   .option("-l, --limit [number]", "limit", 500)
-  .action(args => {
+  .action((args) => {
     const { limit } = args;
-
+    setAwsConfigFromArgs(args)
     getRestApis({
-      limit
+      limit,
     })
-      .then(apis => {
-        console.log(apis.items.map(i => ({ id: i.id, name: i.name })));
+      .then((apis) => {
+        console.log(apis.items.map((i) => ({ id: i.id, name: i.name })));
         process.exit();
       })
-      .catch(e => console.error(e));
+      .catch((e) => console.error(e));
   });
 
 program
   .command("stages")
   .description("Get stages for a given restApiId.")
   .option("-i, --restApiId <id>", "restApiId")
-  .action(args => {
+  .action((args) => {
     const { restApiId } = args;
-
+    setAwsConfigFromArgs(args)
     getStages({
-      restApiId
+      restApiId,
     })
-      .then(stages => {
+      .then((stages) => {
         console.log(
-          stages.item.map(i => ({
+          stages.item.map((i) => ({
             deploymentId: i.deploymentId,
-            stageName: i.stageName
+            stageName: i.stageName,
           }))
         );
         process.exit();
       })
-      .catch(e => console.error(e));
+      .catch((e) => console.error(e));
   });
 
 program
@@ -81,18 +95,19 @@ program
   .option("-t, --sdkType [type]", "sdkType", "javascript")
   .option("-s, --stageName [stage]", "stageName", "prod")
   .option("-p, --path [path]", "path", "./")
-  .action(args => {
+  .action((args) => {
     const { sdkType, path, stageName, restApiId } = args;
+    setAwsConfigFromArgs(args)
     getSdkAndSave({ restApiId, sdkType, stageName }, path)
-      .then(sdk => {
+      .then((sdk) => {
         process.exit();
       })
-      .catch(e => console.error(e));
+      .catch((e) => console.error(e));
   });
 
 program.parse(process.argv);
 
-program.on("command:*", function() {
+program.on("command:*", function () {
   console.error(
     "Invalid command: %s\nSee --help for a list of available commands.",
     program.args.join(" ")
